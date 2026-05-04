@@ -1,0 +1,60 @@
+/* --- 基礎設定 --- */
+body {
+    font-family: sans-serif;
+    margin: 0; /* 歸零邊距，讓選單可以貼齊邊緣 */
+}
+
+/* --- 魔法的外層容器 --- */
+/* 當滑鼠碰到這個區域時，裡面的選單就會滑出來 */
+.sidebar-wrapper {
+    position: fixed; /* 固定在螢幕左上角 */
+    top: 0;
+    left: 0;
+    height: 100vh;   /* 高度等於整個螢幕高 */
+    z-index: 1000;   /* 確保它浮在網頁最上層 */
+}
+
+/* --- 漢堡圖示 --- */
+.hamburger-btn {
+    font-size: 28px;
+    padding: 15px;
+    cursor: pointer;
+    position: relative; 
+    z-index: 1001; /* 圖示要比選單還要高層，才不會被選單蓋住 */
+}
+
+/* --- 長方形側邊選單 --- */
+.side-menu {
+    position: absolute;
+    top: 0;
+    left: -250px;       /* 關鍵 1：預設往左移 250px，把它藏在畫面外 */
+    width: 200px;       /* 選單的寬度 */
+    height: 100vh;      /* 佔滿整個螢幕高度 */
+    background-color: #333; /* 深色背景 */
+    padding-top: 60px;  /* 留白，以免蓋到漢堡圖示 */
+    box-shadow: 2px 0 5px rgba(0,0,0,0.5); /* 加上一點陰影看起來更有立體感 */
+    
+    display: flex;
+    flex-direction: column;
+
+    /* 關鍵 2：設定動畫！當 left 數值改變時，花 0.3 秒平滑過渡 */
+    transition: left 0.3s ease; 
+}
+
+/* --- 當滑鼠移到外層容器上時，改變選單的位置 --- */
+.sidebar-wrapper:hover .side-menu {
+    left: 0; /* 關鍵 3：把選單的左側拉回畫面邊緣 (0px)，就會產生滑出效果 */
+}
+
+/* --- 選單內連結的樣式 --- */
+.side-menu a {
+    text-decoration: none;
+    color: white;
+    padding: 15px 20px;
+    border-bottom: 1px solid #444;
+}
+
+/* 滑鼠移到選項上的反饋 */
+.side-menu a:hover {
+    background-color: #555; 
+}

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>左側滑出選單</title>
+    <!-- 載入 CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <!-- 用一個外層容器包住按鈕和選單 -->
+    <div class="sidebar-wrapper">
+        
+        <!-- 漢堡按鈕 -->
+        <div class="hamburger-btn">☰</div>
+
+        <!-- 側邊長方形選單 -->
+        <nav class="side-menu">
+            <a href="#">首頁</a>
+            <a href="#">關於我們</a>
+            <a href="#">服務項目</a>
+            <a href="#">聯絡我們</a>
+        </nav>
+        
+    </div>
+
+    <!-- 網頁的假內容，讓你看得出選單是浮在上面的 -->
+    <div style="margin-left: 60px; padding: 20px;">
+        <h1>超酷網站</h1>
+    </div>
+
+</body>
+</html>
