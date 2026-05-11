@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>左側滑出選單</title>
+    <title>超酷網站</title>
     <!-- 載入 CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
 
@@ -19,7 +19,7 @@
         <nav class="side-menu">
             <a href="#">首頁</a>
             <a href="#">關於我們</a>
-            <a href="#">服務項目</a>
+            <a href="#">成果展示</a>
             <a href="#">聯絡我們</a>
         </nav>
         
@@ -28,6 +28,7 @@
     <!-- 網頁的假內容，讓你看得出選單是浮在上面的 -->
     <div style="margin-left: 60px; padding: 20px;">
         <h1>超酷網站</h1>
+        <img src="{{ url_for('static', filename='image/icon.webp') }}" width="300">
     </div>
 
 </body>
