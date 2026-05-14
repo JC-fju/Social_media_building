@@ -90,7 +90,7 @@ body {
     box-shadow: 0 0 15px rgba(32, 240, 80, 0.4);
 }
 
-/* --- 最新消息區塊 (參考截圖風格) --- */
+/* --- 最新消息區塊 --- */
 .news-section {
     width: 100%;
     max-width: 1000px;
@@ -144,7 +144,7 @@ body {
 /* 消息列表網格 (兩兩並排) */
 .news-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(800px, 1fr));
     gap: 25px;
 }
 

@@ -27,65 +27,30 @@
         <div class="news-section">
             <div class="news-header">
                 <h2>最新消息 <span class="slash">//</span></h2>
-                <a href="#" class="view-more-btn">查看更多</a>
+                <div>
+                    <a href="{{ url_for('update_news') }}" class="view-more-btn" style="margin-right: 10px; border-color: #20f050;">
+                        🔄 即時爬取輔大公告
+                    </a>
+                </div>
             </div>
             
             <div class="news-grid">
-                
+                {% for news in news_list %}
                 <div class="news-item">
                     <div class="news-date">
-                        <div class="month">5月</div>
-                        <div class="day">12</div>
+                        <div class="month">{{ news.date.split('-')[0] }}月</div>
+                        <div class="day">{{ news.date.split('-')[1] }}</div>
                     </div>
                     <div class="news-content">
                         <div class="tags">
-                            <span class="tag important">重要</span>
-                            <span class="tag normal">系統公告</span>
+                            <span class="tag normal">{{ news.tag }}</span>
                         </div>
-                        <a href="#" class="news-title">EDEN 社群平台正式上線測試與注意事項</a>
+                        <a href="{{ news.link }}" target="_blank" class="news-title">{{ news.title }}</a>
                     </div>
                 </div>
-                
-                <div class="news-item">
-                    <div class="news-date">
-                        <div class="month">4月</div>
-                        <div class="day">20</div>
-                    </div>
-                    <div class="news-content">
-                        <div class="tags">
-                            <span class="tag important">重要</span>
-                            <span class="tag normal">活動公告</span>
-                        </div>
-                        <a href="#" class="news-title">AI 輔助數學證明工作坊 - 報名資訊公告</a>
-                    </div>
-                </div>
-
-                <div class="news-item">
-                    <div class="news-date">
-                        <div class="month">3月</div>
-                        <div class="day">30</div>
-                    </div>
-                    <div class="news-content">
-                        <div class="tags">
-                            <span class="tag normal">社群活動</span>
-                        </div>
-                        <a href="#" class="news-title">第一屆 EDEN 網頁開發交流會報到時間表</a>
-                    </div>
-                </div>
-
-                <div class="news-item">
-                    <div class="news-date">
-                        <div class="month">5月</div>
-                        <div class="day">06</div>
-                    </div>
-                    <div class="news-content">
-                        <div class="tags">
-                            <span class="tag normal">演講公告</span>
-                        </div>
-                        <a href="#" class="news-title">科技與數學的結合：邊緣運算實作分享</a>
-                    </div>
-                </div>
-
+                {% else %}
+                <p style="color: #90b0a0;">目前沒有最新消息，請點擊上方「即時爬取」按鈕進行抓取。</p>
+                {% endfor %}
             </div>
         </div>
         
