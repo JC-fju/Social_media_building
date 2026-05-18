@@ -28,13 +28,6 @@ def achievements():
 def contact():
     return render_template("contact.html")
 
-@app.route("/update_news")
-def update_news():
-    print("啟動爬蟲程式，這可能需要幾秒鐘...")
-    
-    run_scraper() 
-    
-    return redirect(url_for('home'))
 
 if __name__ == "__main__":
 
