@@ -10,6 +10,18 @@
     <div class="top-header">
             <img src="{{ url_for('static', filename='image/banner.webp') }}" alt="EDEN Icon" class="header-icon">
         </div>
+
+        <div class="sidebar-wrapper">
+        <div class="hamburger-btn">☰</div>
+        <nav class="side-menu">
+            <a href="{{ url_for('home') }}">首頁 HOME</a>
+            <a href="{{ url_for('about') }}">關於我們 ABOUT</a>
+            <a href="{{ url_for('achievements') }}">成果展示 ACHIEVEMENTS</a>
+            <a href="{{ url_for('contact') }}">聯絡我們 CONTACT</a>
+            <a href="{{ url_for('forum') }}">討論區 FORUM</a>
+        </nav>
+    </div>
+    
     <h1>DC圖片拿來用</h1>
 </body>
 </html>

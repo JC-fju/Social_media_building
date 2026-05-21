@@ -7,6 +7,17 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/eden.css') }}">
 </head>
 <body>
+        <div class="sidebar-wrapper">
+        <div class="hamburger-btn">☰</div>
+        <nav class="side-menu">
+            <a href="{{ url_for('home') }}">首頁 HOME</a>
+            <a href="{{ url_for('about') }}">關於我們 ABOUT</a>
+            <a href="{{ url_for('achievements') }}">成果展示 ACHIEVEMENTS</a>
+            <a href="{{ url_for('contact') }}">聯絡我們 CONTACT</a>
+            <a href="{{ url_for('forum') }}">討論區 FORUM</a>
+        </nav>
+    </div>
+    
     <h1>DC圖片 + 自我介紹</h1>
 </body>
 </html>
