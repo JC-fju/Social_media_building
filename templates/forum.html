@@ -1,13 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>討論區</title>
+    <title>EDEN - 討論區</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/eden.css') }}">
+    <style>
+        .forum-container { width: 100%; max-width: 800px; margin: 0 auto; }
+        .user-status { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 10px; background: rgba(32, 240, 80, 0.1); border-radius: 6px; border: 1px solid #104020; }
+        .post-box { width: 100%; padding: 15px; background: rgba(10, 25, 15, 0.6); border: 1px solid #104020; border-radius: 8px; margin-bottom: 30px; box-sizing: border-box; }
+        .post-textarea { width: 100%; height: 100px; background: #051008; border: 1px solid #154525; color: #e0e0e0; padding: 10px; border-radius: 4px; resize: none; box-sizing: border-box; margin-bottom: 10px; }
+        .post-textarea:focus { border-color: #20f050; outline: none; }
+        .submit-post-btn { background: #20f050; color: #030a05; padding: 10px 20px; border: none; font-weight: bold; border-radius: 4px; cursor: pointer; float: right; }
+        .submit-post-btn:hover { box-shadow: 0 0 8px #20f050; }
+        .clearfix::after { content: ""; clear: both; display: table; }
+        .post-list { display: flex; flex-direction: column; gap: 20px; }
+        .post-item { background: rgba(10, 25, 15, 0.6); border: 1px solid #104020; border-radius: 8px; padding: 20px; }
+        .post-meta { display: flex; justify-content: space-between; font-size: 14px; color: #a0d0b0; border-bottom: 1px solid #154525; padding-bottom: 8px; margin-bottom: 12px; }
+        .post-author { font-weight: bold; color: #20f050; }
+        .post-content { color: #e0e0e0; line-height: 1.6; word-wrap: break-word; white-space: pre-line; }
+        .logout-btn { color: #d93025; text-decoration: none; font-weight: bold; font-size: 14px; border: 1px solid #d93025; padding: 4px 10px; border-radius: 4px; }
+        .logout-btn:hover { background: #d93025; color: white; }
+    </style>
 </head>
 <body>
-        <div class="sidebar-wrapper">
+    <div class="sidebar-wrapper">
         <div class="hamburger-btn">☰</div>
         <nav class="side-menu">
             <a href="{{ url_for('home') }}">首頁 HOME</a>
@@ -18,9 +34,36 @@
         </nav>
     </div>
 
-    <h1>這裡要放討論區</h1>
-    <h2>需要帳密方得進入</h2>
-    <h3>目前還沒有做登入系統，所以先放這裡</h3>
-    <h4>支援文字及圖片上傳，未來可能會加入影片上傳功能</h4>
+    <div class="main-content">
+        <div class="forum-container">
+            <div class="user-status">
+                <span>哈囉，<strong class="post-author">{{ current_user }}</strong>！歡迎來到加密論壇區</span>
+                <a href="{{ url_for('logout') }}" class="logout-btn">登出系統</a>
+            </div>
+
+            <div class="post-box clearfix">
+                <form method="POST">
+                    <textarea name="content" class="post-textarea" placeholder="在這裡分享你的想法、微積分心得或程式開發筆記..." required></textarea>
+                    <button type="submit" class="submit-post-btn">發布貼文</button>
+                </form>
+            </div>
+
+            <div class="post-list">
+                {% if posts %}
+                    {% for post in posts %}
+                    <div class="post-item">
+                        <div class="post-meta">
+                            <span class="post-author">@{{ post.author.username }}</span>
+                            <span>{{ post.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                        </div>
+                        <div class="post-content">{{ post.content }}</div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p style="text-align: center; color: #a0d0b0;">目前還沒有任何貼文，快來搶頭香吧！</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 </body>
 </html>
