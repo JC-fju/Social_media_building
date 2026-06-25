@@ -1,31 +1,35 @@
 import os
 import time
 from datetime import datetime
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
-from dotenv import load_dotenv  # 新增這行：載入 dotenv 套件
+from werkzeug.utils import secure_filename # 新增：用來過濾危險的檔案名稱
+from dotenv import load_dotenv
 
-# 讀取 .env 檔案中的變數
 load_dotenv() 
 
 app = Flask(__name__)
 
-# --- 改從環境變數讀取機密資訊 ---
+# --- 設定上傳檔案的資料夾與允許的格式 ---
+UPLOAD_FOLDER = os.path.join('static', 'uploads')
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'mp4', 'mov'} # 允許圖片與影片格式
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# 1. 讀取 Secret Key (如果找不到，給一個預設值防呆)
+# 如果 uploads 資料夾不存在，程式啟動時自動建立
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+# 檢查副檔名的輔助函式
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+# --- 資料庫設定 ---
 app.secret_key = os.environ.get("SECRET_KEY", "fallback_secret_key")
-
-# 2. 讀取資料庫網址
 db_url = os.environ.get("DATABASE_URL", "sqlite:///eden.db")
-
-# Render PostgreSQL 網址修正防呆機制
 if db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql://", 1)
-
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
 db = SQLAlchemy(app)
 
 # 1. 既有的最新消息模型
@@ -48,8 +52,11 @@ class User(db.Model):
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text, nullable=False)
+    # 新增這行：用來儲存影音檔案的路徑 (允許為空)
+    media_url = db.Column(db.String(200), nullable=True) 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
 
 # 初始化資料表
 with app.app_context():
@@ -121,20 +128,34 @@ def logout():
 
 @app.route("/forum", methods=["GET", "POST"])
 def forum():
-    # 權限驗證：未登入者直接導向登入頁面
     if "user_id" not in session:
         return redirect(url_for("login"))
         
-    # 處理發布新貼文 (POST)
     if request.method == "POST":
         content = request.form.get("content")
+        file = request.files.get("media_file") # 接收上傳的檔案
+        media_url = None
+        
+        # 處理檔案上傳
+        if file and allowed_file(file.filename):
+            # 把檔名過濾掉危險字元，並加上時間戳記防止檔名重複覆蓋
+            original_filename = secure_filename(file.filename)
+            filename = f"{int(time.time())}_{original_filename}"
+            
+            # 儲存檔案到 static/uploads/ 裡面
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
+            
+            # 存入資料庫的路徑字串 (給 url_for 用的相對路徑)
+            media_url = f"uploads/{filename}"
+
         if content and content.strip():
-            new_post = Post(content=content.strip(), user_id=session["user_id"])
+            # 新增貼文時，把 media_url 也存進去
+            new_post = Post(content=content.strip(), user_id=session["user_id"], media_url=media_url)
             db.session.add(new_post)
             db.session.commit()
             return redirect(url_for("forum"))
             
-    # 讀取所有貼文 (按時間由新到舊排序)
     all_posts = Post.query.order_by(Post.created_at.desc()).all()
     return render_template("forum.html", current_user=session["username"], posts=all_posts)
 

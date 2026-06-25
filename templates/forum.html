@@ -42,8 +42,16 @@
             </div>
 
             <div class="post-box clearfix">
-                <form method="POST">
-                    <textarea name="content" class="post-textarea" placeholder="在這裡分享你的想法、微積分心得或程式開發筆記..." required></textarea>
+                <form method="POST" enctype="multipart/form-data">
+                    <textarea name="content" class="post-textarea" placeholder="在這裡分享你的想法或貼上梗圖..." required></textarea>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label style="color: #a0d0b0; font-size: 14px; cursor: pointer;">
+                            📎 附加影音 (支援圖片或短影片)
+                            <input type="file" name="media_file" accept="image/*,video/*" style="display: block; margin-top: 5px; color: #e0e0e0; font-size: 12px;">
+                        </label>
+                    </div>
+
                     <button type="submit" class="submit-post-btn">發布貼文</button>
                 </form>
             </div>
@@ -57,6 +65,20 @@
                             <span>{{ post.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
                         </div>
                         <div class="post-content">{{ post.content }}</div>
+                        
+                        {% if post.media_url %}
+                            <div style="margin-top: 15px;">
+                                {% if post.media_url.endswith(('mp4', 'mov')) %}
+                                    <video controls style="max-width: 100%; border-radius: 6px; border: 1px solid #154525;">
+                                        <source src="{{ url_for('static', filename=post.media_url) }}">
+                                        你的瀏覽器不支援影片播放
+                                    </video>
+                                {% else %}
+                                    <img src="{{ url_for('static', filename=post.media_url) }}" alt="貼文附圖" style="max-width: 100%; border-radius: 6px; border: 1px solid #154525;">
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                        
                     </div>
                     {% endfor %}
                 {% else %}
