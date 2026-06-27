@@ -12,3 +12,12 @@
    ```bash
    docker build -t final_project .
    docker run -d -p 5000:5000 --name web_server final_project
+
+
+本專案支援影片上傳，為了讓網頁播放時有聲音，需要安裝 FFmpeg。
+
+Windows:
+winget install -e --id Gyan.FFmpeg
+
+安裝後確認:
+ffmpeg -version

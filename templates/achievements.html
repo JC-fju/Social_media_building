@@ -1,17 +1,168 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>成果展示</title>
+    <title>EDEN - 成果展示</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/eden.css') }}">
+    <style>
+        /* --- GitHub 專欄樣式 --- */
+        .github-section {
+            width: 80%;
+            max-width: 900px;
+            margin: 60px auto 40px auto;
+            text-align: center;
+        }
+
+        .github-title {
+            color: #e0e0e0;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #154525;
+            padding-bottom: 10px;
+        }
+
+        .github-title span { color: #20f050; }
+
+        .github-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .github-card {
+            background: rgba(10, 25, 15, 0.6);
+            border: 1px solid #104020;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: left;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: block;
+        }
+
+        .github-card:hover {
+            border-color: #20f050;
+            box-shadow: 0 0 15px rgba(32, 240, 80, 0.2);
+            transform: translateY(-5px); /* 滑鼠移過去會往上浮游 */
+            background: rgba(15, 40, 20, 0.8);
+        }
+
+        .repo-name {
+            color: #20f050;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .repo-name svg {
+            margin-right: 8px;
+            fill: #20f050;
+            width: 20px;
+            height: 20px;
+        }
+
+        .repo-desc {
+            color: #a0d0b0;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* 頁面基礎設定 */
+        body { margin: 0; padding: 0; background-color: #030a05; font-family: sans-serif; }
+        .page-title { text-align: center; color: #e0e0e0; letter-spacing: 2px; margin-top: 40px; }
+        .page-title span { color: #20f050; }
+
+        /* --- 圖片滑動集 (Carousel) 樣式 --- */
+        .carousel-wrapper {
+            position: relative;
+            width: 80%;
+            max-width: 900px;
+            margin: 40px auto;
+            background: rgba(10, 25, 15, 0.8);
+            border: 1px solid #104020;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(32, 240, 80, 0.1);
+        }
+
+        /* 隱藏超出範圍的圖片 */
+        .carousel-container {
+            overflow: hidden;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        /* 裝載所有圖片的軌道 */
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        /* 單張圖片容器 */
+        .carousel-slide {
+            min-width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: auto;
+            max-height: 500px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #154525;
+        }
+
+        /* 圖片下方的說明文字 */
+        .slide-caption {
+            margin-top: 15px;
+            color: #a0d0b0;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        /* 左右控制按鈕 */
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(3, 10, 5, 0.8);
+            color: #20f050;
+            border: 1px solid #20f050;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .carousel-btn:hover {
+            background: #20f050;
+            color: #030a05;
+            box-shadow: 0 0 10px #20f050;
+        }
+
+        .prev-btn { left: 30px; }
+        .next-btn { right: 30px; }
+    </style>
 </head>
 <body>
-    <div class="top-header">
-            <img src="{{ url_for('static', filename='image/banner.webp') }}" alt="EDEN Icon" class="header-icon">
-        </div>
+    <div class="top-header" style="width: 100%; display: flex; justify-content: center; padding-top: 20px;">
+        <img src="{{ url_for('static', filename='image/banner.webp') }}" alt="EDEN Banner" style="max-width: 800px; width: 80%; border-radius: 8px;">
+    </div>
 
-        <div class="sidebar-wrapper">
+    <div class="sidebar-wrapper">
         <div class="hamburger-btn">☰</div>
         <nav class="side-menu">
             <a href="{{ url_for('home') }}">首頁 HOME</a>
@@ -22,6 +173,109 @@
         </nav>
     </div>
     
-    <h1>DC圖片拿來用</h1>
+    <h1 class="page-title">近期成果與活動紀錄 <span>//</span></h1>
+
+    <div class="carousel-wrapper">
+        <button class="carousel-btn prev-btn" id="prevBtn">&#10094;</button>
+        <button class="carousel-btn next-btn" id="nextBtn">&#10095;</button>
+
+        <div class="carousel-container">
+            <div class="carousel-track" id="carouselTrack">
+                
+                <div class="carousel-slide">
+                    <img src="{{ url_for('static', filename='image/討論.webp') }}" alt="團隊討論">
+                    <div class="slide-caption">團隊熱烈討論專案架構與開發細節</div>
+                </div>
+
+                <div class="carousel-slide">
+                    <img src="{{ url_for('static', filename='image/研究.webp') }}" alt="硬體研究">
+                    <div class="slide-caption">環境建置與設備串接測試</div>
+                </div>
+
+                <div class="carousel-slide">
+                    <img src="{{ url_for('static', filename='image/聽課.webp') }}" alt="聽課紀錄">
+                    <div class="slide-caption">專注聆聽技術講解與實作細節</div>
+                </div>
+
+                <div class="carousel-slide">
+                    <img src="{{ url_for('static', filename='image/思考.webp') }}" alt="思考解法">
+                    <div class="slide-caption">面對程式 Bug，冷靜思考解決方案</div>
+                </div>
+
+                <div class="carousel-slide">
+                    <img src="{{ url_for('static', filename='image/講解.webp') }}" alt="專案講解">
+                    <div class="slide-caption">上台分享實作構想與技術成果</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="github-section">
+        <h2 class="github-title">開源專案與實作 <span>// GitHub Repositories</span></h2>
+        
+        <div class="github-grid">
+            
+            <a href="https://github.com/JC-fju/sound.git" target="_blank" class="github-card">
+                <div class="repo-name">
+                    <svg viewBox="0 0 16 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"></path></svg>
+                    sound
+                </div>
+                <div class="repo-desc">聲紋辨識應用。</div>
+            </a>
+
+            <a href="https://github.com/Jerry-ya-ya/JetsonOrinNano.git" target="_blank" class="github-card">
+                <div class="repo-name">
+                    <svg viewBox="0 0 16 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"></path></svg>
+                    JetsonOrinNano
+                </div>
+                <div class="repo-desc">Nvidia Jetson Orin Nano 學習資源。</div>
+            </a>
+
+            <a href="https://github.com/JC-fju/Social_media_building.git" target="_blank" class="github-card">
+                <div class="repo-name">
+                    <svg viewBox="0 0 16 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"></path></svg>
+                    EDEN_Social_Platform
+                </div>
+                <div class="repo-desc">此網頁實作。</div>
+            </a>
+
+        </div>
+    </div>
+    <script>
+        const track = document.getElementById('carouselTrack');
+        const slides = Array.from(track.children);
+        const nextButton = document.getElementById('nextBtn');
+        const prevButton = document.getElementById('prevBtn');
+        
+        let currentIndex = 0;
+
+        // 更新圖片位置的函式
+        const updateCarousel = () => {
+            // 每個 slide 的寬度都是 100%，所以移動 100% * 索引值
+            track.style.transform = `translateX(-${currentIndex * 100}%)`;
+        };
+
+        // 點擊下一張
+        nextButton.addEventListener('click', () => {
+            if (currentIndex < slides.length - 1) {
+                currentIndex++;
+            } else {
+                currentIndex = 0; // 到底了就回到第一張
+            }
+            updateCarousel();
+        });
+
+        // 點擊上一張
+        prevButton.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+            } else {
+                currentIndex = slides.length - 1; // 在第一張按上一張，就跳到最後一張
+            }
+            updateCarousel();
+        });
+    </script>
+    
 </body>
 </html>
