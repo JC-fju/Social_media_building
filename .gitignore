@@ -2,6 +2,7 @@ instance/
 gesture_labels.json
 static/uploads/*
 !static/uploads/.gitkeep
+dataset_sorted/ 
 *.db
 *.sqlite3
 .env
