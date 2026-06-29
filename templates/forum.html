@@ -152,6 +152,38 @@
             padding: 4px 10px; border-radius: 4px;
         }
         .logout-btn:hover { background: #d93025; color: white; }
+
+        /* 刪除 / 編輯按鈕 */
+        .action-btn {
+            background: none; border: none;
+            font-size: 12px; cursor: pointer;
+            padding: 2px 8px; border-radius: 3px;
+            transition: all 0.2s;
+        }
+        .delete-btn { color: #d93025; border: 1px solid #d93025; }
+        .delete-btn:hover { background: #d93025; color: white; }
+        .edit-btn { color: #3a7050; border: 1px solid #3a7050; margin-right: 4px; }
+        .edit-btn:hover { background: #3a7050; color: white; }
+
+        /* 編輯模式 textarea */
+        .edit-area {
+            width: 100%; min-height: 80px;
+            background: #051008; border: 1px solid #20f050;
+            color: #e0e0e0; padding: 8px; border-radius: 4px;
+            resize: vertical; font-size: 14px; box-sizing: border-box;
+            margin-top: 8px;
+        }
+        .edit-save-btn {
+            background: #20f050; color: #030a05;
+            border: none; padding: 6px 16px;
+            border-radius: 4px; cursor: pointer;
+            font-size: 13px; margin-top: 6px; margin-right: 6px;
+        }
+        .edit-cancel-btn {
+            background: none; color: #a0d0b0;
+            border: 1px solid #3a7050; padding: 6px 16px;
+            border-radius: 4px; cursor: pointer; font-size: 13px; margin-top: 6px;
+        }
     </style>
 </head>
 <body>
@@ -223,10 +255,32 @@
                                     @{{ post.author.username }}
                                 </a>
                             </div>
-                            <span>{{ post.created_at | tw_time }}</span>
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <span>{{ post.created_at | tw_time }}</span>
+                                {% if post.author.username == current_user %}
+                                <button type="button" class="action-btn edit-btn" onclick="toggleEdit('{{ post.id }}')">編輯</button>
+                                <form method="POST" action="{{ url_for('delete_post', post_id=post.id) }}"
+                                      style="display:inline;"
+                                      onsubmit="return confirm('確定要刪除這篇貼文嗎？')">
+                                    <button type="submit" class="action-btn delete-btn">刪除</button>
+                                </form>
+                                {% endif %}
+                            </div>
                         </div>
 
-                        <div class="post-content">{{ post.content }}</div>
+                        <!-- 一般顯示 -->
+                        <div class="post-content" id="content-{{ post.id }}">{{ post.content }}</div>
+
+                        <!-- 編輯模式（預設隱藏） -->
+                        <div id="edit-form-{{ post.id }}" style="display:none;">
+                            <form method="POST" action="{{ url_for('edit_post', post_id=post.id) }}">
+                                <textarea name="content" class="edit-area">{{ post.content }}</textarea>
+                                <div>
+                                    <button type="submit" class="edit-save-btn">儲存</button>
+                                    <button type="button" class="edit-cancel-btn" onclick="toggleEdit('{{ post.id }}')">取消</button>
+                                </div>
+                            </form>
+                        </div>
 
                         {% if post.media_url %}
                         <div style="margin-top: 15px;">
@@ -267,6 +321,13 @@
                                             @{{ reply.author.username }}
                                         </a>
                                         <span style="color:#3a7050;">{{ reply.created_at | tw_time }}</span>
+                                        {% if reply.author.username == current_user %}
+                                        <form method="POST" action="{{ url_for('delete_reply', reply_id=reply.id) }}"
+                                              style="margin-left:auto;"
+                                              onsubmit="return confirm('確定要刪除這則回覆嗎？')">
+                                            <button type="submit" class="action-btn delete-btn">刪除</button>
+                                        </form>
+                                        {% endif %}
                                     </div>
                                     <div class="reply-content">{{ reply.content }}</div>
                                 </div>
@@ -293,6 +354,14 @@
     </div>
 
     <script>
+        function toggleEdit(postId) {
+            const content  = document.getElementById('content-' + postId);
+            const editForm = document.getElementById('edit-form-' + postId);
+            const isEditing = editForm.style.display !== 'none';
+            content.style.display  = isEditing ? 'block' : 'none';
+            editForm.style.display = isEditing ? 'none'  : 'block';
+        }
+
         function toggleReplies(postId) {
             const el  = document.getElementById('replies-' + postId);
             const btn = el.previousElementSibling;

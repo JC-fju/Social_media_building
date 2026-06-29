@@ -7,62 +7,80 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/eden.css') }}">
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='image/favicon.ico') }}">
     <style>
-        /* ── Loading Overlay ── */
         #scrape-overlay {
-            position: fixed;
-            inset: 0;
+            position: fixed; inset: 0;
             background: rgba(3, 10, 5, 0.92);
             z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 28px;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 28px;
             transition: opacity 0.6s ease;
         }
-
-        #scrape-overlay.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
+        #scrape-overlay.hidden { opacity: 0; pointer-events: none; }
         .loader-ring {
-            width: 72px;
-            height: 72px;
-            border: 4px solid #104020;
-            border-top-color: #20f050;
-            border-radius: 50%;
-            animation: spin 0.9s linear infinite;
+            width: 72px; height: 72px;
+            border: 4px solid #104020; border-top-color: #20f050;
+            border-radius: 50%; animation: spin 0.9s linear infinite;
         }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
+        @keyframes spin { to { transform: rotate(360deg); } }
         .loader-text {
-            color: #20f050;
-            font-family: monospace;
-            font-size: 16px;
-            letter-spacing: 2px;
+            color: #20f050; font-family: monospace;
+            font-size: 16px; letter-spacing: 2px;
             animation: pulse 1.4s ease-in-out infinite;
         }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .loader-sub { color: #3a7050; font-family: monospace; font-size: 13px; letter-spacing: 1px; }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50%       { opacity: 0.4; }
+        .tag-filter-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+        .tag-btn {
+            background: transparent; color: #3a7050;
+            border: 1px solid #154525; border-radius: 4px;
+            padding: 5px 14px; font-size: 13px; cursor: pointer; transition: all 0.2s;
         }
+        .tag-btn:hover { border-color: #20f050; color: #20f050; }
+        .tag-btn.active { background: #20f050; color: #030a05; border-color: #20f050; font-weight: bold; }
 
-        .loader-sub {
-            color: #3a7050;
-            font-family: monospace;
-            font-size: 13px;
-            letter-spacing: 1px;
+        .forum-preview-section {
+            width: 100%; max-width: 1000px;
+            background: rgba(10, 25, 15, 0.6);
+            border: 1px solid #104020; border-radius: 8px;
+            padding: 24px 30px; margin-top: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
         }
+        .forum-preview-header {
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 2px solid #154525; padding-bottom: 12px; margin-bottom: 18px;
+        }
+        .forum-preview-header h2 { margin: 0; color: #e0e0e0; font-size: 22px; letter-spacing: 2px; }
+        .forum-preview-header .slash { color: #20f050; text-shadow: 0 0 5px #20f050; }
+        .go-forum-btn {
+            color: #20f050; text-decoration: none;
+            border: 1px solid #20f050; padding: 6px 14px;
+            border-radius: 4px; font-size: 13px; transition: all 0.3s;
+        }
+        .go-forum-btn:hover { background: #20f050; color: #030a05; box-shadow: 0 0 8px #20f050; }
+
+        .forum-preview-list { display: flex; flex-direction: column; gap: 12px; }
+        .forum-preview-item {
+            background: rgba(5, 15, 8, 0.5);
+            border: 1px solid #0d2018; border-radius: 6px;
+            padding: 14px 16px; transition: border-color 0.2s;
+        }
+        .forum-preview-item:hover { border-color: #20f050; }
+        .forum-preview-meta {
+            display: flex; justify-content: space-between;
+            font-size: 13px; color: #a0d0b0; margin-bottom: 6px;
+        }
+        .forum-preview-author { color: #20f050; font-weight: bold; }
+        .forum-preview-content {
+            color: #c0d8c8; font-size: 14px; line-height: 1.5;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .forum-empty { color: #3a7050; font-size: 14px; text-align: center; padding: 20px 0; }
+        .news-item.hidden { display: none; }
     </style>
 </head>
 <body>
 
-    <!-- 爬蟲 loading overlay，只有 scraping=True 時才顯示 -->
     {% if scraping %}
     <div id="scrape-overlay">
         <div class="loader-ring"></div>
@@ -93,12 +111,19 @@
                 <h2>數學系最新消息 <span class="slash">//</span></h2>
             </div>
 
+            <div class="tag-filter-bar">
+                <button class="tag-btn active" onclick="filterTag(this, 'all')">全部</button>
+                {% for tag in tags %}
+                <button class="tag-btn" onclick="filterTag(this, '{{ tag }}')">{{ tag }}</button>
+                {% endfor %}
+            </div>
+
             <div class="news-grid" id="news-grid">
                 {% for news in news_list %}
-                <div class="news-item">
+                <div class="news-item" data-tag="{{ news.tag }}">
                     <div class="news-date">
-                        <div class="month">{{ news.date.split('-')[0] }}月</div>
-                        <div class="day">{{ news.date.split('-')[1] }}</div>
+                        <div class="month">{{ news.date.split('-')[1] }}月</div>
+                        <div class="day">{{ news.date.split('-')[2] }}</div>
                     </div>
                     <div class="news-content">
                         <div class="tags">
@@ -111,32 +136,61 @@
             </div>
         </div>
 
+        <div class="forum-preview-section">
+            <div class="forum-preview-header">
+                <h2>討論區動態 <span class="slash">//</span></h2>
+                <a href="{{ url_for('forum') }}" class="go-forum-btn">前往討論區 →</a>
+            </div>
+            <div class="forum-preview-list">
+                {% if latest_posts %}
+                    {% for post in latest_posts %}
+                    <div class="forum-preview-item">
+                        <div class="forum-preview-meta">
+                            <span class="forum-preview-author">@{{ post.author.username }}</span>
+                            <span>{{ post.created_at | tw_time }}</span>
+                        </div>
+                        <div class="forum-preview-content">{{ post.content }}</div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="forum-empty">目前還沒有貼文，快去討論區搶頭香！</div>
+                {% endif %}
+            </div>
+        </div>
+
     </div>
+
+    <script>
+        function filterTag(btn, tag) {
+            document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.news-item').forEach(item => {
+                if (tag === 'all' || item.dataset.tag === tag) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        }
+    </script>
 
     {% if scraping %}
     <script>
-        // 輪詢後端，爬蟲跑完就淡出 overlay 並重新載入新聞
         const overlay = document.getElementById('scrape-overlay');
-
         async function pollScrapeStatus() {
             try {
                 const res  = await fetch('/scrape_status');
                 const data = await res.json();
-
                 if (data.status === 'done') {
-                    // 爬完：淡出 overlay，然後 reload 頁面抓最新資料
                     overlay.classList.add('hidden');
                     setTimeout(() => location.reload(), 650);
                 } else {
-                    // 還在跑：1.2 秒後再問
                     setTimeout(pollScrapeStatus, 1200);
                 }
             } catch (e) {
-                // 網路錯誤就直接淡出，不卡住使用者
                 overlay.classList.add('hidden');
             }
         }
-
         pollScrapeStatus();
     </script>
     {% endif %}

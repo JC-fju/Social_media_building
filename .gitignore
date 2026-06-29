@@ -1,7 +1,4 @@
 instance/
-dataset_sorted/
-gesture_cnn_model.h5
-gesture_cnn_best.h5
 gesture_labels.json
 static/uploads/*
 !static/uploads/.gitkeep

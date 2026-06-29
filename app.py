@@ -226,8 +226,20 @@ def home():
     else:
         print("⚡ 讀取資料庫快取，略過爬蟲")
 
-    all_news = News.query.order_by(News.id.desc()).limit(6).all()
-    return render_template("index.html", news_list=all_news, scraping=(scrape_status == "running"))
+    # 所有新聞依日期新到舊排序（date 格式 yyyy-mm-dd 可直接字串排序）
+    all_news = News.query.order_by(News.date.desc(), News.id.desc()).all()
+
+    # 所有不重複的 tag，供前端篩選
+    tags = sorted(set(n.tag for n in all_news))
+
+    # 論壇最新 3 篇（未登入也能看預覽）
+    latest_posts = Post.query.order_by(Post.created_at.desc()).limit(3).all()
+
+    return render_template("index.html",
+                           news_list=all_news,
+                           tags=tags,
+                           latest_posts=latest_posts,
+                           scraping=(scrape_status == "running"))
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -316,6 +328,45 @@ def forum():
     current_user_obj = User.query.get(session["user_id"])
     return render_template("forum.html", current_user=session["username"],
                            current_user_obj=current_user_obj, posts=all_posts)
+
+@app.route("/delete_post/<int:post_id>", methods=["POST"])
+def delete_post(post_id):
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+    post = Post.query.get_or_404(post_id)
+    if post.user_id != session["user_id"]:
+        return "權限不足", 403
+    db.session.delete(post)
+    db.session.commit()
+    return redirect(url_for("forum"))
+
+
+@app.route("/delete_reply/<int:reply_id>", methods=["POST"])
+def delete_reply(reply_id):
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+    reply = Reply.query.get_or_404(reply_id)
+    if reply.user_id != session["user_id"]:
+        return "權限不足", 403
+    post_id = reply.post_id
+    db.session.delete(reply)
+    db.session.commit()
+    return redirect(url_for("forum") + f"#post-{post_id}")
+
+
+@app.route("/edit_post/<int:post_id>", methods=["POST"])
+def edit_post(post_id):
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+    post = Post.query.get_or_404(post_id)
+    if post.user_id != session["user_id"]:
+        return "權限不足", 403
+    new_content = request.form.get("content", "").strip()
+    if new_content:
+        post.content = new_content
+        db.session.commit()
+    return redirect(url_for("forum") + f"#post-{post_id}")
+
 
 @app.route("/reply/<int:post_id>", methods=["POST"])
 def reply(post_id):
