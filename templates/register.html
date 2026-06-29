@@ -4,24 +4,123 @@
     <meta charset="UTF-8">
     <title>EDEN - 註冊新帳號</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/eden.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='image/favicon.ico') }}">
     <style>
-        .auth-container { max-width: 400px; margin: 100px auto; padding: 30px; background: rgba(10, 25, 15, 0.8); border: 1px solid #104020; border-radius: 8px; text-align: center; }
-        .auth-input { width: 100%; padding: 10px; margin: 10px 0; background: #051008; border: 1px solid #20f050; color: #e0e0e0; border-radius: 4px; box-sizing: border-box; }
-        .auth-btn { width: 100%; padding: 12px; background: #20f050; border: none; color: #030a05; font-weight: bold; border-radius: 4px; cursor: pointer; margin-top: 15px; }
+        .auth-container {
+            max-width: 400px; margin: 100px auto; padding: 30px;
+            background: rgba(10, 25, 15, 0.8);
+            border: 1px solid #104020; border-radius: 8px; text-align: center;
+        }
+
+        .auth-input {
+            width: 100%; padding: 10px; margin: 10px 0;
+            background: #051008; border: 1px solid #20f050;
+            color: #e0e0e0; border-radius: 4px; box-sizing: border-box;
+        }
+
+        .auth-btn {
+            width: 100%; padding: 12px; background: #20f050;
+            border: none; color: #030a05; font-weight: bold;
+            border-radius: 4px; cursor: pointer; margin-top: 15px;
+        }
         .auth-btn:hover { box-shadow: 0 0 10px #20f050; }
-        .auth-link { color: #a0d0b0; text-decoration: none; display: inline-block; margin-top: 15px; font-size: 14px; }
+
+        .auth-link {
+            color: #a0d0b0; text-decoration: none;
+            display: inline-block; margin-top: 15px; font-size: 14px;
+        }
         .auth-link:hover { color: #20f050; }
+
+        .error-msg {
+            color: #f05050; font-size: 14px;
+            background: rgba(240,80,80,0.1);
+            border: 1px solid #f05050;
+            border-radius: 4px; padding: 8px; margin-bottom: 10px;
+        }
+
+        /* 頭像預覽 */
+        .avatar-preview-wrap {
+            display: flex; flex-direction: column; align-items: center;
+            margin: 14px 0 6px;
+        }
+
+        .avatar-preview {
+            width: 72px; height: 72px; border-radius: 50%;
+            border: 2px solid #20f050; object-fit: cover;
+            box-shadow: 0 0 10px rgba(32,240,80,0.3);
+            display: none;
+        }
+
+        .avatar-placeholder-circle {
+            width: 72px; height: 72px; border-radius: 50%;
+            border: 2px dashed #154525; background: #051008;
+            display: flex; align-items: center; justify-content: center;
+            color: #3a7050; font-size: 28px; cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .avatar-placeholder-circle:hover { border-color: #20f050; color: #20f050; }
+
+        .avatar-hint { color: #3a7050; font-size: 12px; margin-top: 6px; }
+
+        .avatar-file-input { display: none; }
     </style>
 </head>
 <body>
+    <div class="sidebar-wrapper">
+        <div class="hamburger-btn">☰</div>
+        <nav class="side-menu">
+            <a href="{{ url_for('home') }}">首頁 HOME</a>
+            <a href="{{ url_for('about') }}">關於我們 ABOUT</a>
+            <a href="{{ url_for('achievements') }}">成果展示 ACHIEVEMENTS</a>
+            <a href="{{ url_for('contact') }}">聯絡我們 CONTACT</a>
+            <a href="{{ url_for('forum') }}">討論區 FORUM</a>
+        </nav>
+    </div>
+
     <div class="auth-container">
         <h2 style="color: #e0e0e0; letter-spacing: 2px;">註冊 EDEN 帳號</h2>
-        <form method="POST">
-            <input type="text" name="username" class="auth-input" placeholder="請輸入使用者名稱" required autocomplete="off">
-            <input type="password" name="password" class="auth-input" placeholder="請輸入密碼" required>
+
+        {% if error %}
+        <div class="error-msg">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data">
+            <!-- 頭像上傳（點擊圓形預覽觸發） -->
+            <div class="avatar-preview-wrap">
+                <div class="avatar-placeholder-circle" id="avatar-circle" onclick="document.getElementById('avatar-input').click()">
+                    ＋
+                </div>
+                <img id="avatar-preview" class="avatar-preview" alt="頭像預覽">
+                <div class="avatar-hint">點擊上傳頭像（可選）</div>
+                <input type="file" name="avatar" id="avatar-input"
+                       class="avatar-file-input" accept="image/*"
+                       onchange="previewAvatar(event)">
+            </div>
+
+            <input type="text" name="username" class="auth-input"
+                   placeholder="請輸入使用者名稱" required autocomplete="off">
+            <input type="password" name="password" class="auth-input"
+                   placeholder="請輸入密碼" required>
             <button type="submit" class="auth-btn">確認註冊</button>
         </form>
+
         <a href="{{ url_for('login') }}" class="auth-link">已有帳號？前往登入</a>
     </div>
+
+    <script>
+        function previewAvatar(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const circle  = document.getElementById('avatar-circle');
+                const preview = document.getElementById('avatar-preview');
+                circle.style.display  = 'none';
+                preview.src           = e.target.result;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    </script>
 </body>
 </html>

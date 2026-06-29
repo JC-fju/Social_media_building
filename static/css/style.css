@@ -58,3 +58,9 @@ body {
 .side-menu a:hover {
     background-color: #555; 
 }
+
+.submit-post-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    box-shadow: none;
+}

@@ -5,8 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EDEN - 成果展示</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/eden.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='image/favicon.ico') }}">
+
     <style>
-        /* --- GitHub 專欄樣式 --- */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #030a05;
+            font-family: sans-serif;
+        }
+
+        .page-title {
+            text-align: center;
+            color: #e0e0e0;
+            letter-spacing: 2px;
+            margin-top: 40px;
+        }
+
+        .page-title span {
+            color: #20f050;
+        }
+
         .github-section {
             width: 80%;
             max-width: 900px;
@@ -22,7 +41,9 @@
             padding-bottom: 10px;
         }
 
-        .github-title span { color: #20f050; }
+        .github-title span {
+            color: #20f050;
+        }
 
         .github-grid {
             display: grid;
@@ -44,7 +65,7 @@
         .github-card:hover {
             border-color: #20f050;
             box-shadow: 0 0 15px rgba(32, 240, 80, 0.2);
-            transform: translateY(-5px); /* 滑鼠移過去會往上浮游 */
+            transform: translateY(-5px);
             background: rgba(15, 40, 20, 0.8);
         }
 
@@ -70,12 +91,6 @@
             line-height: 1.6;
         }
 
-        /* 頁面基礎設定 */
-        body { margin: 0; padding: 0; background-color: #030a05; font-family: sans-serif; }
-        .page-title { text-align: center; color: #e0e0e0; letter-spacing: 2px; margin-top: 40px; }
-        .page-title span { color: #20f050; }
-
-        /* --- 圖片滑動集 (Carousel) 樣式 --- */
         .carousel-wrapper {
             position: relative;
             width: 80%;
@@ -88,20 +103,17 @@
             box-shadow: 0 0 20px rgba(32, 240, 80, 0.1);
         }
 
-        /* 隱藏超出範圍的圖片 */
         .carousel-container {
             overflow: hidden;
             border-radius: 8px;
             position: relative;
         }
 
-        /* 裝載所有圖片的軌道 */
         .carousel-track {
             display: flex;
             transition: transform 0.5s ease-in-out;
         }
 
-        /* 單張圖片容器 */
         .carousel-slide {
             min-width: 100%;
             box-sizing: border-box;
@@ -119,7 +131,6 @@
             border: 1px solid #154525;
         }
 
-        /* 圖片下方的說明文字 */
         .slide-caption {
             margin-top: 15px;
             color: #a0d0b0;
@@ -127,7 +138,6 @@
             text-align: center;
         }
 
-        /* 左右控制按鈕 */
         .carousel-btn {
             position: absolute;
             top: 50%;
@@ -155,11 +165,134 @@
 
         .prev-btn { left: 30px; }
         .next-btn { right: 30px; }
+
+        .ai-lab-container {
+            text-align: center;
+            background: #05100a;
+            padding: 20px;
+            border: 1px solid #20f050;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(32, 240, 80, 0.08);
+        }
+
+        .camera-box {
+            position: relative;
+            width: 100%;
+            max-width: 640px;
+            aspect-ratio: 4 / 3;
+            margin: 0 auto;
+            background: black;
+            border: 2px solid #104020;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        #webcam,
+        #output_canvas {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        #webcam {
+            object-fit: cover;
+            transform: scaleX(-1);
+            opacity: 0;
+        }
+
+        #output_canvas {
+            z-index: 2;
+        }
+
+        #gesture-status {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            color: #20f050;
+            font-family: monospace;
+            font-size: 20px;
+            text-shadow: 0 0 5px #20f050;
+            z-index: 5;
+            background: rgba(0, 0, 0, 0.50);
+            padding: 8px 0;
+        }
+
+        .gesture-help {
+            margin-top: 15px;
+            color: #a0d0b0;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .button-row {
+            margin-top: 20px;
+        }
+
+        .submit-post-btn {
+            margin: 6px;
+            background: transparent;
+            color: #20f050;
+            border: 1px solid #20f050;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .submit-post-btn:hover {
+            background: #20f050;
+            color: #030a05;
+            box-shadow: 0 0 10px #20f050;
+        }
+
+        .submit-post-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            box-shadow: none;
+            background: transparent;
+            color: #20f050;
+        }
+
+        /* 信心度顏色 */
+        .confidence-high   { color: #20f050; }
+        .confidence-medium { color: #f0c020; }
+        .confidence-low    { color: #f05020; }
+
+        @media (max-width: 768px) {
+            .github-section,
+            .carousel-wrapper {
+                width: 90%;
+            }
+
+            .carousel-btn {
+                width: 38px;
+                height: 38px;
+                font-size: 20px;
+            }
+
+            .prev-btn { left: 15px; }
+            .next-btn { right: 15px; }
+
+            #gesture-status {
+                font-size: 16px;
+            }
+
+            .submit-post-btn {
+                width: 90%;
+                max-width: 300px;
+            }
+        }
     </style>
 </head>
+
 <body>
     <div class="top-header" style="width: 100%; display: flex; justify-content: center; padding-top: 20px;">
-        <img src="{{ url_for('static', filename='image/banner.webp') }}" alt="EDEN Banner" style="max-width: 800px; width: 80%; border-radius: 8px;">
+        <img src="{{ url_for('static', filename='image/banner.webp') }}"
+             alt="EDEN Banner"
+             style="max-width: 800px; width: 80%; border-radius: 8px;">
     </div>
 
     <div class="sidebar-wrapper">
@@ -172,16 +305,34 @@
             <a href="{{ url_for('forum') }}">討論區 FORUM</a>
         </nav>
     </div>
-    
+
     <h1 class="page-title">近期成果與活動紀錄 <span>//</span></h1>
 
     <div class="carousel-wrapper">
         <button class="carousel-btn prev-btn" id="prevBtn">&#10094;</button>
         <button class="carousel-btn next-btn" id="nextBtn">&#10095;</button>
 
+        <!-- 手勢觸發時的短暫提示 -->
+        <div id="gesture-carousel-feedback" style="
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(32,240,80,0.15);
+            border: 1px solid #20f050;
+            color: #20f050;
+            font-family: monospace;
+            font-size: 18px;
+            padding: 6px 20px;
+            border-radius: 6px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 20;
+            pointer-events: none;
+        "></div>
+
         <div class="carousel-container">
             <div class="carousel-track" id="carouselTrack">
-                
                 <div class="carousel-slide">
                     <img src="{{ url_for('static', filename='image/討論.webp') }}" alt="團隊討論">
                     <div class="slide-caption">團隊熱烈討論專案架構與開發細節</div>
@@ -206,76 +357,393 @@
                     <img src="{{ url_for('static', filename='image/講解.webp') }}" alt="專案講解">
                     <div class="slide-caption">上台分享實作構想與技術成果</div>
                 </div>
-
             </div>
         </div>
     </div>
 
     <div class="github-section">
         <h2 class="github-title">開源專案與實作 <span>// GitHub Repositories</span></h2>
-        
+
         <div class="github-grid">
-            
             <a href="https://github.com/JC-fju/sound.git" target="_blank" class="github-card">
-                <div class="repo-name">
-                    <svg viewBox="0 0 16 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"></path></svg>
-                    sound
-                </div>
+                <div class="repo-name">sound</div>
                 <div class="repo-desc">聲紋辨識應用。</div>
             </a>
 
             <a href="https://github.com/Jerry-ya-ya/JetsonOrinNano.git" target="_blank" class="github-card">
-                <div class="repo-name">
-                    <svg viewBox="0 0 16 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"></path></svg>
-                    JetsonOrinNano
-                </div>
+                <div class="repo-name">JetsonOrinNano</div>
                 <div class="repo-desc">Nvidia Jetson Orin Nano 學習資源。</div>
             </a>
 
             <a href="https://github.com/JC-fju/Social_media_building.git" target="_blank" class="github-card">
-                <div class="repo-name">
-                    <svg viewBox="0 0 16 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"></path></svg>
-                    EDEN_Social_Platform
-                </div>
+                <div class="repo-name">EDEN_Social_Platform</div>
                 <div class="repo-desc">此網頁實作。</div>
             </a>
-
         </div>
     </div>
+
+    <div class="github-section">
+        <h2 class="github-title">AI 實驗室 <span>// CNN Gesture Recognition</span></h2>
+
+        <div class="ai-lab-container">
+            <div class="camera-box">
+                <video id="webcam" autoplay playsinline muted></video>
+                <canvas id="output_canvas"></canvas>
+                <div id="gesture-status">等待啟動...</div>
+            </div>
+
+            <div class="button-row">
+                <button id="start-btn" class="submit-post-btn">開啟攝影機並辨識手勢</button>
+                <button id="stop-btn" class="submit-post-btn" disabled>關閉攝影機</button>
+            </div>
+
+            <div class="gesture-help">
+                請將手放入綠色框框內，系統只會截取框框區域送到 CNN 模型辨識 0～5。<br>
+                建議保持與拍攝訓練資料時相同的背景、光線、手掌距離與角度。<br>
+                <span style="color:#20f050;">✦ 手勢 1 → 上一張照片　手勢 2 → 下一張照片</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 走馬燈控制 -->
     <script>
         const track = document.getElementById('carouselTrack');
         const slides = Array.from(track.children);
         const nextButton = document.getElementById('nextBtn');
         const prevButton = document.getElementById('prevBtn');
-        
+
         let currentIndex = 0;
 
-        // 更新圖片位置的函式
-        const updateCarousel = () => {
-            // 每個 slide 的寬度都是 100%，所以移動 100% * 索引值
+        function updateCarousel() {
             track.style.transform = `translateX(-${currentIndex * 100}%)`;
-        };
+        }
 
-        // 點擊下一張
-        nextButton.addEventListener('click', () => {
-            if (currentIndex < slides.length - 1) {
-                currentIndex++;
-            } else {
-                currentIndex = 0; // 到底了就回到第一張
-            }
+        function goNextSlide() {
+            currentIndex = currentIndex < slides.length - 1 ? currentIndex + 1 : 0;
             updateCarousel();
+        }
+
+        function goPrevSlide() {
+            currentIndex = currentIndex > 0 ? currentIndex - 1 : slides.length - 1;
+            updateCarousel();
+        }
+
+        nextButton.addEventListener('click', goNextSlide);
+        prevButton.addEventListener('click', goPrevSlide);
+
+        // 手勢控制走馬燈（由 CNN 辨識區呼叫）
+        // 1 → 上一張、2 → 下一張、0/3/4/5 → 無動作
+        let lastGestureLabel = null;
+        let gestureCooldown  = false;
+
+        function handleGestureControl(label) {
+            if (gestureCooldown) return;
+            if (label === lastGestureLabel) return;   // 同一手勢不重複觸發
+
+            if (label === '1') {
+                goPrevSlide();
+                triggerGestureFeedback('◀ 上一張');
+            } else if (label === '2') {
+                goNextSlide();
+                triggerGestureFeedback('下一張 ▶');
+            } else {
+                return;  // 其他手勢不動
+            }
+
+            lastGestureLabel = label;
+            gestureCooldown  = true;
+
+            // 冷卻 1.2 秒，避免連續觸發
+            setTimeout(() => {
+                gestureCooldown  = false;
+                lastGestureLabel = null;
+            }, 1200);
+        }
+
+        // 走馬燈上方短暫顯示手勢動作提示
+        function triggerGestureFeedback(text) {
+            const feedback = document.getElementById('gesture-carousel-feedback');
+            if (!feedback) return;
+            feedback.innerText  = text;
+            feedback.style.opacity = '1';
+            setTimeout(() => { feedback.style.opacity = '0'; }, 900);
+        }
+    </script>
+
+    <!-- CNN 手勢辨識 -->
+    <script>
+        const video        = document.getElementById('webcam');
+        const canvas       = document.getElementById('output_canvas');
+        const ctx          = canvas.getContext('2d');
+        const statusText   = document.getElementById('gesture-status');
+        const startBtn     = document.getElementById('start-btn');
+        const stopBtn      = document.getElementById('stop-btn');
+
+        canvas.width  = 640;
+        canvas.height = 480;
+
+        let cameraStream      = null;
+        let isDetecting       = false;
+        let isPredicting      = false;
+        let predictionHistory = [];
+        let loopTimer         = null;
+
+        const ROI_SIZE         = 360;
+        const LOOP_INTERVAL    = 250;   // 回應完才等 250ms，比固定 650ms 更即時
+        const HISTORY_SIZE     = 5;
+        const CONFIDENCE_THRES = 0.60;  // 信心低於此值不顯示結果
+
+        // ──────────────────────────────────────
+        // ROI 位置計算
+        // ──────────────────────────────────────
+        function getRoiRect() {
+            return {
+                x:    Math.floor((canvas.width  - ROI_SIZE) / 2),
+                y:    Math.floor((canvas.height - ROI_SIZE) / 2),
+                size: ROI_SIZE,
+            };
+        }
+
+        // ──────────────────────────────────────
+        // 多數決平滑：取最近 N 幀最常出現的結果
+        // ──────────────────────────────────────
+        function smoothPrediction(label) {
+            predictionHistory.push(label);
+            if (predictionHistory.length > HISTORY_SIZE) {
+                predictionHistory.shift();
+            }
+
+            const countMap = {};
+            predictionHistory.forEach(item => {
+                countMap[item] = (countMap[item] || 0) + 1;
+            });
+
+            let bestLabel = label;
+            let bestCount = 0;
+            Object.keys(countMap).forEach(item => {
+                if (countMap[item] > bestCount) {
+                    bestLabel = item;
+                    bestCount = countMap[item];
+                }
+            });
+
+            return bestLabel;
+        }
+
+        // ──────────────────────────────────────
+        // 畫面繪製（每幀）
+        // ──────────────────────────────────────
+        function drawCameraFrame() {
+            if (!isDetecting) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 鏡像繪製影像
+            ctx.save();
+            ctx.scale(-1, 1);
+            ctx.drawImage(video, -canvas.width, 0, canvas.width, canvas.height);
+            ctx.restore();
+
+            const roi = getRoiRect();
+
+            // 框外壓暗
+            ctx.save();
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.20)';
+            ctx.fillRect(0, 0, canvas.width, roi.y);
+            ctx.fillRect(0, roi.y + roi.size, canvas.width, canvas.height - roi.y - roi.size);
+            ctx.fillRect(0, roi.y, roi.x, roi.size);
+            ctx.fillRect(roi.x + roi.size, roi.y, canvas.width - roi.x - roi.size, roi.size);
+            ctx.restore();
+
+            // 主框線
+            ctx.strokeStyle = '#20f050';
+            ctx.lineWidth   = 3;
+            ctx.strokeRect(roi.x, roi.y, roi.size, roi.size);
+
+            // 四角裝飾（科技感）
+            const cornerLen = 20;
+            const corners = [
+                [roi.x,            roi.y,            1,  1],
+                [roi.x + roi.size, roi.y,           -1,  1],
+                [roi.x,            roi.y + roi.size,  1, -1],
+                [roi.x + roi.size, roi.y + roi.size, -1, -1],
+            ];
+            ctx.strokeStyle = '#20f050';
+            ctx.lineWidth   = 4;
+            corners.forEach(([cx, cy, dx, dy]) => {
+                ctx.beginPath();
+                ctx.moveTo(cx + dx * cornerLen, cy);
+                ctx.lineTo(cx, cy);
+                ctx.lineTo(cx, cy + dy * cornerLen);
+                ctx.stroke();
+            });
+
+            // 提示標籤
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.55)';
+            ctx.fillRect(roi.x, roi.y - 34, roi.size, 30);
+            ctx.fillStyle = '#20f050';
+            ctx.font      = '18px monospace';
+            ctx.fillText('請將手放入框框內', roi.x + 88, roi.y - 12);
+
+            requestAnimationFrame(drawCameraFrame);
+        }
+
+        // ──────────────────────────────────────
+        // 截取 ROI（直接從 video 截，不含 canvas 上的標註）
+        // ──────────────────────────────────────
+        function getRoiImageData() {
+            const roi      = getRoiRect();
+            const roiCanvas = document.createElement('canvas');
+            roiCanvas.width  = roi.size;
+            roiCanvas.height = roi.size;
+            const roiCtx = roiCanvas.getContext('2d');
+
+            roiCtx.save();
+            roiCtx.scale(-1, 1);
+            roiCtx.drawImage(
+                video,
+                -(canvas.width - roi.x),
+                -roi.y,
+                canvas.width,
+                canvas.height
+            );
+            roiCtx.restore();
+
+            return roiCanvas.toDataURL('image/png');
+        }
+
+        // ──────────────────────────────────────
+        // 送出預測（回應完才排下一次）
+        // ──────────────────────────────────────
+        async function predictCurrentFrame() {
+            if (!isDetecting || isPredicting) return;
+
+            isPredicting = true;
+
+            try {
+                const imageData = getRoiImageData();
+
+                const response = await fetch('/predict_gesture', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ image: imageData }),
+                });
+
+                const result = await response.json();
+
+                if (!result.success) {
+                    statusText.innerText = result.error || 'CNN 辨識失敗';
+                    return;
+                }
+
+                // 信心閾值過濾：太低就不更新顯示
+                if (result.confidence < CONFIDENCE_THRES) {
+                    statusText.className  = '';
+                    statusText.innerText  = `辨識中... （信心不足 ${Math.round(result.confidence * 100)}%）`;
+                    return;
+                }
+
+                const smoothLabel       = smoothPrediction(result.label);
+                const confidencePercent = Math.round(result.confidence * 100);
+
+                // 手勢控制走馬燈
+                handleGestureControl(smoothLabel);
+
+                // 根據信心度改顏色
+                if (confidencePercent >= 85) {
+                    statusText.style.color = '#20f050';
+                } else if (confidencePercent >= 70) {
+                    statusText.style.color = '#f0c020';
+                } else {
+                    statusText.style.color = '#f05020';
+                }
+
+                statusText.innerText = `辨識結果：${smoothLabel}｜信心度：${confidencePercent}%`;
+
+            } catch (error) {
+                console.error(error);
+                statusText.innerText = '無法連線到 CNN 辨識 API';
+            } finally {
+                isPredicting = false;
+            }
+        }
+
+        // ──────────────────────────────────────
+        // 動態節流：回應完才等 LOOP_INTERVAL ms
+        // ──────────────────────────────────────
+        async function predictionLoop() {
+            if (!isDetecting) return;
+            await predictCurrentFrame();
+            if (isDetecting) {
+                loopTimer = setTimeout(predictionLoop, LOOP_INTERVAL);
+            }
+        }
+
+        // ──────────────────────────────────────
+        // 開啟攝影機
+        // ──────────────────────────────────────
+        startBtn.addEventListener('click', async function () {
+            try {
+                statusText.style.color = '#20f050';
+                statusText.innerText   = '正在開啟攝影機...';
+
+                cameraStream = await navigator.mediaDevices.getUserMedia({
+                    video: { width: 640, height: 480 },
+                    audio: false,
+                });
+
+                video.srcObject = cameraStream;
+
+                video.onloadedmetadata = async function () {
+                    await video.play();
+
+                    isDetecting       = true;
+                    predictionHistory = [];
+
+                    startBtn.disabled = true;
+                    stopBtn.disabled  = false;
+
+                    statusText.innerText = '攝影機已啟動，開始 CNN 辨識...';
+
+                    drawCameraFrame();
+                    predictionLoop();
+                };
+
+            } catch (error) {
+                console.error(error);
+                statusText.innerText = '無法開啟攝影機，請檢查權限或瀏覽器設定';
+            }
         });
 
-        // 點擊上一張
-        prevButton.addEventListener('click', () => {
-            if (currentIndex > 0) {
-                currentIndex--;
-            } else {
-                currentIndex = slides.length - 1; // 在第一張按上一張，就跳到最後一張
+        // ──────────────────────────────────────
+        // 關閉攝影機
+        // ──────────────────────────────────────
+        stopBtn.addEventListener('click', function () {
+            isDetecting   = false;
+            isPredicting  = false;
+            predictionHistory = [];
+
+            if (loopTimer) {
+                clearTimeout(loopTimer);
+                loopTimer = null;
             }
-            updateCarousel();
+
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(t => t.stop());
+                cameraStream = null;
+            }
+
+            video.pause();
+            video.srcObject = null;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            statusText.style.color = '#20f050';
+            statusText.innerText   = '攝影機已關閉';
+
+            startBtn.disabled = false;
+            stopBtn.disabled  = true;
         });
     </script>
-    
 </body>
 </html>

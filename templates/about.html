@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>關於我們</title>
+    <title>關於我們 - EDEN</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/eden.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='image/favicon.ico') }}">
 </head>
 <body>
-        <div class="sidebar-wrapper">
+    
+    <div class="sidebar-wrapper">
         <div class="hamburger-btn">☰</div>
         <nav class="side-menu">
             <a href="{{ url_for('home') }}">首頁 HOME</a>
@@ -18,6 +20,29 @@
         </nav>
     </div>
     
-    <h1>DC圖片 + 自我介紹</h1>
+    <div class="content-area about-area">
+        <div class="about-container">
+            <h2 class="about-title">關於 EDEN <span>// SYSTEM.INFO</span></h2>
+            
+            <p class="mission-text">
+                我們是一個專注於結合 <strong>AI 邊緣運算</strong> 與 <strong>Web 互動技術</strong> 的開發團隊。<br>
+                從前端的即時影像辨識，到後端的資料庫架構，再到硬體端 (NVIDIA Jetson) 的深度整合，
+                EDEN 致力於打造低延遲、高隱私的次世代社群互動平台。
+            </p>
+
+            <div class="team-title">> CORE_TEAM_MEMBERS</div>
+            <div class="team-grid">
+                <div class="team-card">
+                    <h3>JC</h3>
+                    <div class="role">Full-Stack Engineer</div>
+                </div>
+                <div class="team-card">
+                    <h3>夥伴名字</h3>
+                    <div class="role">AI / Hardware Engineer</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>

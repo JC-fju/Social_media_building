@@ -4,21 +4,153 @@
     <meta charset="UTF-8">
     <title>EDEN - 討論區</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/eden.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='image/favicon.ico') }}">
     <style>
         .forum-container { width: 100%; max-width: 800px; margin: 0 auto; }
-        .user-status { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 10px; background: rgba(32, 240, 80, 0.1); border-radius: 6px; border: 1px solid #104020; }
-        .post-box { width: 100%; padding: 15px; background: rgba(10, 25, 15, 0.6); border: 1px solid #104020; border-radius: 8px; margin-bottom: 30px; box-sizing: border-box; }
-        .post-textarea { width: 100%; height: 100px; background: #051008; border: 1px solid #154525; color: #e0e0e0; padding: 10px; border-radius: 4px; resize: none; box-sizing: border-box; margin-bottom: 10px; }
+
+        .user-status {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; padding: 10px 15px;
+            background: rgba(32, 240, 80, 0.1); border-radius: 6px; border: 1px solid #104020;
+        }
+
+        .user-status-left { display: flex; align-items: center; gap: 12px; }
+
+        /* 頭像 */
+        .avatar {
+            width: 38px; height: 38px; border-radius: 50%;
+            border: 2px solid #20f050; object-fit: cover;
+            box-shadow: 0 0 6px rgba(32,240,80,0.4);
+        }
+
+        .avatar-placeholder {
+            width: 38px; height: 38px; border-radius: 50%;
+            border: 2px solid #20f050;
+            background: #0a2515;
+            display: flex; align-items: center; justify-content: center;
+            color: #20f050; font-weight: bold; font-size: 16px;
+            box-shadow: 0 0 6px rgba(32,240,80,0.4);
+            text-decoration: none;
+        }
+
+        .post-box {
+            width: 100%; padding: 15px;
+            background: rgba(10, 25, 15, 0.6);
+            border: 1px solid #104020; border-radius: 8px;
+            margin-bottom: 30px; box-sizing: border-box;
+        }
+
+        .post-textarea {
+            width: 100%; height: 100px;
+            background: #051008; border: 1px solid #154525;
+            color: #e0e0e0; padding: 10px; border-radius: 4px;
+            resize: none; box-sizing: border-box; margin-bottom: 10px;
+        }
         .post-textarea:focus { border-color: #20f050; outline: none; }
-        .submit-post-btn { background: #20f050; color: #030a05; padding: 10px 20px; border: none; font-weight: bold; border-radius: 4px; cursor: pointer; float: right; }
+
+        .submit-post-btn {
+            background: #20f050; color: #030a05;
+            padding: 10px 20px; border: none;
+            font-weight: bold; border-radius: 4px;
+            cursor: pointer; float: right;
+        }
         .submit-post-btn:hover { box-shadow: 0 0 8px #20f050; }
         .clearfix::after { content: ""; clear: both; display: table; }
+
         .post-list { display: flex; flex-direction: column; gap: 20px; }
-        .post-item { background: rgba(10, 25, 15, 0.6); border: 1px solid #104020; border-radius: 8px; padding: 20px; }
-        .post-meta { display: flex; justify-content: space-between; font-size: 14px; color: #a0d0b0; border-bottom: 1px solid #154525; padding-bottom: 8px; margin-bottom: 12px; }
-        .post-author { font-weight: bold; color: #20f050; }
-        .post-content { color: #e0e0e0; line-height: 1.6; word-wrap: break-word; white-space: pre-line; }
-        .logout-btn { color: #d93025; text-decoration: none; font-weight: bold; font-size: 14px; border: 1px solid #d93025; padding: 4px 10px; border-radius: 4px; }
+
+        .post-item {
+            background: rgba(10, 25, 15, 0.6);
+            border: 1px solid #104020; border-radius: 8px; padding: 20px;
+        }
+
+        .post-meta {
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 14px; color: #a0d0b0;
+            border-bottom: 1px solid #154525;
+            padding-bottom: 8px; margin-bottom: 12px;
+        }
+
+        .post-meta-left { display: flex; align-items: center; gap: 10px; }
+
+        .post-author { font-weight: bold; color: #20f050; text-decoration: none; }
+        .post-author:hover { text-shadow: 0 0 6px #20f050; }
+
+        .post-content {
+            color: #e0e0e0; line-height: 1.6;
+            word-wrap: break-word; white-space: pre-line;
+        }
+
+        /* 回覆區 */
+        .reply-section { margin-top: 16px; border-top: 1px solid #0d2018; padding-top: 14px; }
+
+        .reply-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
+
+        .reply-item {
+            background: rgba(5, 15, 8, 0.7);
+            border-left: 3px solid #154525;
+            border-radius: 0 6px 6px 0;
+            padding: 10px 14px;
+        }
+
+        .reply-meta {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 13px; color: #a0d0b0; margin-bottom: 6px;
+        }
+
+        .reply-avatar {
+            width: 26px; height: 26px; border-radius: 50%;
+            border: 1px solid #20f050; object-fit: cover;
+        }
+
+        .reply-avatar-placeholder {
+            width: 26px; height: 26px; border-radius: 50%;
+            border: 1px solid #20f050; background: #0a2515;
+            display: flex; align-items: center; justify-content: center;
+            color: #20f050; font-size: 12px; font-weight: bold;
+            text-decoration: none;
+        }
+
+        .reply-author { color: #20f050; font-weight: bold; text-decoration: none; }
+        .reply-author:hover { text-shadow: 0 0 6px #20f050; }
+
+        .reply-content { color: #c0d8c8; font-size: 14px; line-height: 1.5; white-space: pre-line; }
+
+        /* 回覆輸入 */
+        .reply-form { display: flex; gap: 8px; align-items: flex-end; }
+
+        .reply-textarea {
+            flex: 1; height: 60px;
+            background: #051008; border: 1px solid #0d2018;
+            color: #e0e0e0; padding: 8px; border-radius: 4px;
+            resize: none; font-size: 13px; box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+        .reply-textarea:focus { border-color: #20f050; outline: none; }
+
+        .reply-btn {
+            background: transparent; color: #20f050;
+            border: 1px solid #20f050; padding: 8px 14px;
+            border-radius: 4px; cursor: pointer;
+            font-size: 13px; white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .reply-btn:hover { background: #20f050; color: #030a05; }
+
+        /* 顯示/隱藏回覆 toggle */
+        .toggle-reply-btn {
+            background: none; border: none;
+            color: #3a7050; font-size: 13px;
+            cursor: pointer; padding: 4px 0; margin-top: 8px;
+            transition: color 0.2s;
+        }
+        .toggle-reply-btn:hover { color: #20f050; }
+
+        .logout-btn {
+            color: #d93025; text-decoration: none; font-weight: bold;
+            font-size: 14px; border: 1px solid #d93025;
+            padding: 4px 10px; border-radius: 4px;
+        }
         .logout-btn:hover { background: #d93025; color: white; }
     </style>
 </head>
@@ -36,56 +168,155 @@
 
     <div class="main-content">
         <div class="forum-container">
+
             <div class="user-status">
-                <span>哈囉，<strong class="post-author">{{ current_user }}</strong>！歡迎來到加密論壇區</span>
+                <div class="user-status-left">
+                    {% set me = current_user_obj %}
+                    {% if me and me.avatar_url %}
+                        <a href="{{ url_for('profile', username=current_user) }}">
+                            <img src="{{ url_for('static', filename=me.avatar_url) }}" class="avatar" alt="頭像">
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('profile', username=current_user) }}" class="avatar-placeholder">
+                            {{ current_user[0]|upper }}
+                        </a>
+                    {% endif %}
+                    <span>哈囉，<strong><a href="{{ url_for('profile', username=current_user) }}" class="post-author">{{ current_user }}</a></strong>！歡迎來到論壇區</span>
+                </div>
                 <a href="{{ url_for('logout') }}" class="logout-btn">登出系統</a>
             </div>
 
+            <!-- 發文區 -->
             <div class="post-box clearfix">
                 <form method="POST" enctype="multipart/form-data">
                     <textarea name="content" class="post-textarea" placeholder="在這裡分享你的想法或貼上梗圖..." required></textarea>
-                    
                     <div style="margin-bottom: 15px;">
                         <label style="color: #a0d0b0; font-size: 14px; cursor: pointer;">
                             📎 附加影音 (支援圖片或短影片)
-                            <input type="file" name="media_file" accept="image/*,video/*" style="display: block; margin-top: 5px; color: #e0e0e0; font-size: 12px;">
+                            <input type="file" name="media_file" accept="image/*,video/*"
+                                   style="display: block; margin-top: 5px; color: #e0e0e0; font-size: 12px;">
                         </label>
                     </div>
-
                     <button type="submit" class="submit-post-btn">發布貼文</button>
                 </form>
             </div>
 
+            <!-- 貼文列表 -->
             <div class="post-list">
                 {% if posts %}
                     {% for post in posts %}
-                    <div class="post-item">
+                    <div class="post-item" id="post-{{ post.id }}">
                         <div class="post-meta">
-                            <span class="post-author">@{{ post.author.username }}</span>
-                            <span>{{ post.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
-                        </div>
-                        <div class="post-content">{{ post.content }}</div>
-                        
-                        {% if post.media_url %}
-                            <div style="margin-top: 15px;">
-                                {% if post.media_url.endswith(('mp4', 'mov')) %}
-                                    <video controls style="max-width: 100%; border-radius: 6px; border: 1px solid #154525;">
-                                        <source src="{{ url_for('static', filename=post.media_url) }}">
-                                        你的瀏覽器不支援影片播放
-                                    </video>
+                            <div class="post-meta-left">
+                                {% if post.author.avatar_url %}
+                                    <a href="{{ url_for('profile', username=post.author.username) }}">
+                                        <img src="{{ url_for('static', filename=post.author.avatar_url) }}"
+                                             class="avatar" style="width:32px;height:32px;" alt="頭像">
+                                    </a>
                                 {% else %}
-                                    <img src="{{ url_for('static', filename=post.media_url) }}" alt="貼文附圖" style="max-width: 100%; border-radius: 6px; border: 1px solid #154525;">
+                                    <a href="{{ url_for('profile', username=post.author.username) }}"
+                                       class="avatar-placeholder" style="width:32px;height:32px;font-size:14px;">
+                                        {{ post.author.username[0]|upper }}
+                                    </a>
                                 {% endif %}
+                                <a href="{{ url_for('profile', username=post.author.username) }}" class="post-author">
+                                    @{{ post.author.username }}
+                                </a>
                             </div>
+                            <span>{{ post.created_at | tw_time }}</span>
+                        </div>
+
+                        <div class="post-content">{{ post.content }}</div>
+
+                        {% if post.media_url %}
+                        <div style="margin-top: 15px;">
+                            {% if post.media_url.endswith(('mp4', 'mov')) %}
+                                <video controls style="max-width:100%;border-radius:6px;border:1px solid #154525;">
+                                    <source src="{{ url_for('static', filename=post.media_url) }}">
+                                    你的瀏覽器不支援影片播放
+                                </video>
+                            {% else %}
+                                <img src="{{ url_for('static', filename=post.media_url) }}" alt="貼文附圖"
+                                     style="max-width:100%;border-radius:6px;border:1px solid #154525;">
+                            {% endif %}
+                        </div>
                         {% endif %}
-                        
+
+                        <!-- 回覆區 -->
+                        <div class="reply-section">
+                            {% if post.replies %}
+                            <button class="toggle-reply-btn" onclick="toggleReplies('{{ post.id }}')">
+                                ▾ 顯示 {{ post.replies|length }} 則回覆
+                            </button>
+                            <div class="reply-list" id="replies-{{ post.id }}" style="display:none; margin-top:10px;">
+                                {% for reply in post.replies %}
+                                <div class="reply-item">
+                                    <div class="reply-meta">
+                                        {% if reply.author.avatar_url %}
+                                            <a href="{{ url_for('profile', username=reply.author.username) }}">
+                                                <img src="{{ url_for('static', filename=reply.author.avatar_url) }}"
+                                                     class="reply-avatar" alt="頭像">
+                                            </a>
+                                        {% else %}
+                                            <a href="{{ url_for('profile', username=reply.author.username) }}"
+                                               class="reply-avatar-placeholder">
+                                                {{ reply.author.username[0]|upper }}
+                                            </a>
+                                        {% endif %}
+                                        <a href="{{ url_for('profile', username=reply.author.username) }}" class="reply-author">
+                                            @{{ reply.author.username }}
+                                        </a>
+                                        <span style="color:#3a7050;">{{ reply.created_at | tw_time }}</span>
+                                    </div>
+                                    <div class="reply-content">{{ reply.content }}</div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+
+                            <!-- 回覆輸入框 -->
+                            <form method="POST" action="{{ url_for('reply', post_id=post.id) }}"
+                                  class="reply-form" style="margin-top:10px;">
+                                <textarea name="content" class="reply-textarea"
+                                          placeholder="回覆這篇貼文..." required></textarea>
+                                <button type="submit" class="reply-btn">回覆</button>
+                            </form>
+                        </div>
+
                     </div>
                     {% endfor %}
                 {% else %}
-                    <p style="text-align: center; color: #a0d0b0;">目前還沒有任何貼文，快來搶頭香吧！</p>
+                    <p style="text-align:center; color:#a0d0b0;">目前還沒有任何貼文，快來搶頭香吧！</p>
                 {% endif %}
             </div>
         </div>
     </div>
+
+    <script>
+        function toggleReplies(postId) {
+            const el  = document.getElementById('replies-' + postId);
+            const btn = el.previousElementSibling;
+            if (el.style.display === 'none') {
+                el.style.display = 'flex';
+                btn.textContent  = btn.textContent.replace('顯示', '隱藏').replace('▾', '▴');
+            } else {
+                el.style.display = 'none';
+                btn.textContent  = btn.textContent.replace('隱藏', '顯示').replace('▴', '▾');
+            }
+        }
+
+        // 有 anchor (#post-xxx) 時自動展開該貼文的回覆
+        const hash = window.location.hash;
+        if (hash && hash.startsWith('#post-')) {
+            const id = hash.replace('#post-', '');
+            const replies = document.getElementById('replies-' + id);
+            if (replies) {
+                replies.style.display = 'flex';
+                const btn = replies.previousElementSibling;
+                if (btn) btn.textContent = btn.textContent.replace('顯示','隱藏').replace('▾','▴');
+                setTimeout(() => document.querySelector(hash)?.scrollIntoView({ behavior: 'smooth' }), 100);
+            }
+        }
+    </script>
 </body>
 </html>

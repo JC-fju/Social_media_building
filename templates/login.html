@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>EDEN - 會員登入</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/eden.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='image/favicon.ico') }}">
     <style>
         /* 建議加上 body 的邊距歸零與背景色，讓畫面與首頁風格保持一致 */
         body { margin: 0; padding: 0; background-color: #030a05; font-family: sans-serif; }
@@ -20,6 +21,18 @@
     </style>
 </head>
 <body>
+
+    <div class="sidebar-wrapper">
+        <div class="hamburger-btn">☰</div>
+        <nav class="side-menu">
+            <a href="{{ url_for('home') }}">首頁 HOME</a>
+            <a href="{{ url_for('about') }}">關於我們 ABOUT</a>
+            <a href="{{ url_for('achievements') }}">成果展示 ACHIEVEMENTS</a>
+            <a href="{{ url_for('contact') }}">聯絡我們 CONTACT</a>
+            <a href="{{ url_for('forum') }}">討論區 FORUM</a>
+        </nav>
+    </div>
+
     <div class="auth-container">
         <h2 style="color: #e0e0e0; letter-spacing: 2px;">會員登入</h2>
         

@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>聯絡我們</title>
+    <title>聯絡我們 - EDEN</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/eden.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='image/favicon.ico') }}">
 </head>
 <body>
-        <div class="sidebar-wrapper">
+    
+    <div class="sidebar-wrapper">
         <div class="hamburger-btn">☰</div>
         <nav class="side-menu">
             <a href="{{ url_for('home') }}">首頁 HOME</a>
@@ -18,6 +20,29 @@
         </nav>
     </div>
     
-    <h1>可能放一些聯絡資訊 like 助教聯絡方式</h1>
+    <div class="content-area contact-area">
+        <div class="contact-box">
+            <div class="contact-title">聯絡我們</div>
+            
+            <div class="social-links">
+                <a href="Discord連結" class="social-btn" target="_blank">
+                    <span class="terminal-prefix">></span> Connect Discord
+                </a>
+                
+                <a href="GitHub網址" class="social-btn" target="_blank">
+                    <span class="terminal-prefix">></span> GitHub Repository
+                </a>
+                
+                <a href="mailto:信箱" class="social-btn">
+                    <span class="terminal-prefix">></span> Send Email
+                </a>
+                
+                <a href="Instagram網址" class="social-btn" target="_blank">
+                    <span class="terminal-prefix">></span> Instagram
+                </a>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>

@@ -228,3 +228,182 @@ body {
 .news-title:hover {
     color: #20f050;
 }
+
+/* =========================================
+   共用內容區塊 (保護側邊欄排版)
+   ========================================= */
+.content-area {
+    flex: 1; /* 填滿側邊欄右側空間 */
+    display: flex;
+    min-height: 100vh;
+}
+
+/* =========================================
+   聯絡我們 (Contact Page) 專屬樣式
+   ========================================= */
+.contact-area {
+    justify-content: center;
+    align-items: center; /* 垂直置中 */
+    background: linear-gradient(135deg, #020503, #0a1510);
+}
+
+.contact-box {
+    background: rgba(10, 21, 16, 0.85);
+    border: 1px solid #20f050;
+    border-radius: 12px;
+    padding: 50px 40px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 0 25px rgba(32, 240, 80, 0.15), inset 0 0 15px rgba(32, 240, 80, 0.05);
+    backdrop-filter: blur(8px);
+}
+
+.contact-title {
+    color: #20f050;
+    text-align: center;
+    margin-bottom: 40px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 26px;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(32, 240, 80, 0.6);
+}
+
+.contact-title::after {
+    content: '█';
+    animation: blink 1s step-end infinite;
+    margin-left: 8px;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+.social-links {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.social-btn {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    background: #030a05;
+    border: 1px solid #104020;
+    color: #e0e0e0;
+    text-decoration: none;
+    border-radius: 8px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.terminal-prefix {
+    color: #20f050;
+    margin-right: 15px;
+    font-weight: bold;
+    transition: transform 0.3s ease;
+}
+
+.social-btn:hover {
+    background: #0a2515;
+    border-color: #20f050;
+    color: #ffffff;
+    box-shadow: 0 0 15px rgba(32, 240, 80, 0.4);
+    transform: translateY(-3px);
+}
+.social-btn:hover .terminal-prefix {
+    transform: translateX(6px);
+}
+
+/* =========================================
+   關於我們 (About Page) 專屬樣式
+   ========================================= */
+.about-area {
+    justify-content: center;
+    align-items: flex-start; /* 靠上對齊 */
+    padding: 60px 40px;
+    background: #020503; 
+}
+
+.about-container {
+    max-width: 900px;
+    width: 100%;
+    background: #060e09;
+    border: 1px solid #0a1a10;
+    border-left: 4px solid #1a8030;
+    padding: 50px 60px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+    border-radius: 4px;
+}
+
+.about-title {
+    color: #e0e0e0; font-size: 28px; font-weight: 600;
+    border-bottom: 1px solid #10301a; padding-bottom: 15px;
+    margin-top: 0; margin-bottom: 30px; letter-spacing: 1px;
+}
+
+.about-title span {
+    color: #1a8030; font-family: 'Courier New', Courier, monospace;
+    font-size: 14px; margin-left: 12px; font-weight: normal;
+}
+
+.mission-text {
+    color: #a0b0a5; line-height: 1.8; font-size: 16px;
+    text-align: justify; margin-bottom: 50px;
+}
+
+.mission-text strong {
+    color: #20f050; font-weight: normal;
+}
+
+.team-title {
+    color: #c0c0c0; font-size: 18px; font-family: 'Courier New', Courier, monospace;
+    margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px;
+}
+
+.team-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px;
+}
+
+.team-card {
+    background: #030805; border: 1px solid #0f2515; padding: 30px 25px;
+    border-radius: 4px; transition: all 0.3s ease;
+}
+
+.team-card:hover {
+    border-color: #1a8030; background: #05100a; transform: translateY(-2px);
+}
+
+.team-card h3 {
+    margin: 0 0 8px 0; color: #e0e0e0; font-size: 20px; letter-spacing: 1px;
+}
+
+.team-card .role {
+    color: #1a8030; font-size: 13px; font-family: 'Courier New', Courier, monospace;
+    text-transform: uppercase; letter-spacing: 1px;
+}
+
+/* 修正：讓 about/contact 的內容區塊吃滿畫面寬度 */
+.content-area {
+    width: 100%;
+    min-height: 100vh;
+    box-sizing: border-box;
+    display: flex;
+}
+
+/* 小螢幕微調：避免內容貼邊或卡片過寬 */
+@media (max-width: 768px) {
+    .about-area {
+        padding: 70px 20px 30px;
+    }
+
+    .about-container {
+        padding: 35px 25px;
+    }
+
+    .contact-area {
+        padding: 70px 20px 30px;
+    }
+
+    .contact-box {
+        padding: 40px 25px;
+    }
+}
